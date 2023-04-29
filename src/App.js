@@ -7,9 +7,17 @@ export default function App() {
   const boardSize = 8;
   const maxMines = 9;
 
-  const [squares, setSquares] = useState(Array(boardSize).fill(0).map(() => Array(boardSize).fill(0)));
+  const [squares, setSquares] = useState(Array(boardSize).fill().map(() => Array(boardSize).fill().map(() => {
+    return {
+      open: false,
+      mine: false,
+      minesNearby: 0,
+      flagged: false,
+      questionMark: false
+    }
+  })));
 
-  function calcNumbers() {
+  function countMines() {
     const updateSquares = squares.slice();
 
     updateSquares.forEach((row, yPos) => {
@@ -46,7 +54,7 @@ export default function App() {
     setSquares(updateSquares);
   }
 
-  function placeManyMines(boardSize) {
+  function placeMines(boardSize) {
     if (isGameStarted) return;
 
     const updateSquares = squares.slice();
@@ -74,11 +82,11 @@ export default function App() {
     }
 
     mines.forEach(position => {
-      updateSquares[position.y][position.x] = -100; // was -1, may cause problems
+      updateSquares[position.y][position.x].mine = true; // was -1, may cause problems
     });
 
     setSquares(updateSquares);
-    calcNumbers();
+    countMines();
 
     isGameStarted = true;
   }
@@ -86,7 +94,7 @@ export default function App() {
   return (
     <>
       <Board squares={squares} setSquares={setSquares} />
-      <button onClick={() => placeManyMines(boardSize)}>Set a lot of mines</button>
+      <button onClick={() => placeMines(boardSize)}>Set a lot of mines</button>
     </>
   );
 }

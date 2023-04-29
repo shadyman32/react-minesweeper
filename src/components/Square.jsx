@@ -1,19 +1,19 @@
 import React from 'react'
 
 export function Square({ state, rowId, columnId, handleClick }) {
-    let output;
-    if (state < 0) {
-        output = 'X';
-    } else if (state > 100) {
-        output = '!'
-    } else {
-        output = state;
+    const getState = () => {
+        if (!state.open) {
+            if (state.flagged) return '!';
+            if (state.questionMark) return '?';
+        };
+
+        if (state.minesNearby) return state.minesNearby;
+        if (state.mine) return 'X';
     }
 
-    const className = state < 0 ? "square-mine" : "square";
     return (
-        <button className={className} onClick={() => handleClick(rowId, columnId)}>
-            {output}
+        <button className='square' onClick={() => handleClick(rowId, columnId)}>
+            {getState()}
         </button>
     )
 }
