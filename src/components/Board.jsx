@@ -1,10 +1,16 @@
 import { Square } from "./Square";
 
 export function Board({ squares, setSquares }) {
-    function handleClick(rowId, columnId) {
-        const updateSquares = squares.slice();
-        updateSquares[rowId][columnId].flagged = true;
-        setSquares(updateSquares);
+    function handleClick(e, rowId, columnId) {
+        if (e.type === 'click') {
+            console.log('Left click');
+        } else if (e.type === 'contextmenu') {
+            e.preventDefault()
+
+            const updateSquares = squares.slice();
+            updateSquares[rowId][columnId].flagged = true;
+            setSquares(updateSquares);
+        }
     }
 
     return (
