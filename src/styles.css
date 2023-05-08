@@ -5,12 +5,9 @@
     float: left;
 }
 
-.square-mine {
-    height: 30px;
-    width: 30px;
-    padding: 0px;
-    float: left;
-    background-color: red;
+.square-open {
+    border: 1px solid #999;
+    background-color: white;
 }
 
 .board-row:after {

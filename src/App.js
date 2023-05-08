@@ -5,7 +5,7 @@ let isGameStarted = false;
 
 export default function App() {
     const boardSize = 8;
-    const maxMines = 9;
+    const maxMines = 10;
 
     const [squares, setSquares] = useState(new Array(boardSize).fill().map(() => new Array(boardSize).fill().map(() => {
         return {
@@ -32,28 +32,28 @@ export default function App() {
                     square.minesNearby += 1;
                 }
 
-                const bottomRow = updateSquares[yPos - 1];
-                if (bottomRow) {
-                    if (bottomRow[xPos].mine) {
-                        square.minesNearby += 1;
-                    }
-                    if (bottomRow[xPos - 1] && bottomRow[xPos - 1].mine) {
-                        square.minesNearby += 1;
-                    }
-                    if (bottomRow[xPos + 1] && bottomRow[xPos + 1].mine) {
-                        square.minesNearby += 1;
-                    }
-                }
-
-                const topRow = updateSquares[yPos + 1];
+                const topRow = updateSquares[yPos - 1];
                 if (topRow) {
-                    if (topRow[xPos] && topRow[xPos].mine) {
+                    if (topRow[xPos].mine) {
                         square.minesNearby += 1;
                     }
                     if (topRow[xPos - 1] && topRow[xPos - 1].mine) {
                         square.minesNearby += 1;
                     }
                     if (topRow[xPos + 1] && topRow[xPos + 1].mine) {
+                        square.minesNearby += 1;
+                    }
+                }
+
+                const bottomRow = updateSquares[yPos + 1];
+                if (bottomRow) {
+                    if (bottomRow[xPos] && bottomRow[xPos].mine) {
+                        square.minesNearby += 1;
+                    }
+                    if (bottomRow[xPos - 1] && bottomRow[xPos - 1].mine) {
+                        square.minesNearby += 1;
+                    }
+                    if (bottomRow[xPos + 1] && bottomRow[xPos + 1].mine) {
                         square.minesNearby += 1;
                     }
                 }
