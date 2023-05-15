@@ -4,18 +4,24 @@ export function Board({ squares, setSquares }) {
     function handleClick(e, y, x) {
         const updateSquares = squares.slice();
         if (e.type === 'click') {
-            updateSquares[y][x].open = true;
-            openField(updateSquares, y, x)
+            if (!updateSquares[y][x].flagged) {
+                updateSquares[y][x].open = true;
+                openField(updateSquares, y, x);
+            }
         } else if (e.type === 'contextmenu') {
             e.preventDefault()
-            updateSquares[y][x].flagged = true;
+            if (!updateSquares[y][x].flagged) {
+                updateSquares[y][x].flagged = true;
+            } else {
+                updateSquares[y][x].flagged = false;
+            }
         }
         setSquares(updateSquares);
     }
 
     function openField(updateSquares, y, x) {
         const currentRow = updateSquares[y];
-        if (!currentRow[x].open) {
+        if (!currentRow[x].open && !currentRow[x].flagged) {
             currentRow[x].open = true;
         }
 
