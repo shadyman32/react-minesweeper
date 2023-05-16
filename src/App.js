@@ -63,10 +63,10 @@ export default function App() {
         setSquares(updateSquares);
     }
 
-    function placeMines(boardSize) {
+    function placeMines(updateSquares, y, x) {
         if (isGameStarted) return;
 
-        const updateSquares = squares.slice();
+        // const updateSquares = squares.slice();
 
         const mines = new Array(maxMines);
 
@@ -82,6 +82,10 @@ export default function App() {
                     duplicate = true;
                 }
             });
+
+            if (y === newMine.y && x === newMine.x) {
+                duplicate = true;
+            }
 
             if (!duplicate) {
                 mines[i] = newMine;
@@ -103,8 +107,7 @@ export default function App() {
 
     return (
         <>
-            <Board squares={squares} setSquares={setSquares} />
-            <button onClick={() => placeMines(boardSize)}>Set a lot of mines</button>
+            <Board squares={squares} setSquares={setSquares} placeMines={placeMines} />
         </>
     );
 }

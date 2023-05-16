@@ -1,10 +1,11 @@
 import { Square } from "./Square";
 
-export function Board({ squares, setSquares }) {
+export function Board({ squares, setSquares, placeMines }) {
     function handleClick(e, y, x) {
         const updateSquares = squares.slice();
         if (e.type === 'click') {
             if (!updateSquares[y][x].flagged) {
+                placeMines(updateSquares, y, x);
                 updateSquares[y][x].open = true;
                 openField(updateSquares, y, x);
             }
