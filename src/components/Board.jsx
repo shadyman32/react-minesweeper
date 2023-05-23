@@ -41,9 +41,25 @@ export function Board({ squares, setSquares, placeMines }) {
             openField(updateSquares, y - 1, x);
         }
 
+        if (topRow && x < topRow.length - 1 && !topRow[x + 1].open) {
+            openField(updateSquares, y - 1, x + 1);
+        }
+
+        if (topRow && x > 0 && !topRow[x - 1].open) {
+            openField(updateSquares, y - 1, x - 1);
+        }
+
         const bottomRow = updateSquares[y + 1];
-        if (bottomRow) {
+        if (bottomRow && !bottomRow[x].open) {
             openField(updateSquares, y + 1, x);
+        }
+
+        if (bottomRow && x < bottomRow.length - 1 && !bottomRow[x + 1].open) {
+            openField(updateSquares, y + 1, x + 1);
+        }
+
+        if (bottomRow && x > 0 && !bottomRow[x - 1].open) {
+            openField(updateSquares, y + 1, x - 1);
         }
 
         setSquares(updateSquares);
