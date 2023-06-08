@@ -18,16 +18,29 @@ export default function App() {
     })));
     const [mines, setMines] = useState(maxMines);
     const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
-
-    if (closedSquares === 0) {
-
-    }
+    const [time, setTime] = useState(0);
 
     useEffect(() => {
         if (closedSquares === 0) {
             alert('You have won!');
         }
     }, [closedSquares]);
+
+    const Timer = () => {
+        useEffect(() => {
+            let intervalId;
+            if (isGameStarted) {
+                intervalId = setInterval(() => setTime(time + 1), 1000);
+            }
+            return () => clearInterval(intervalId);
+        }, []);
+
+        return (
+            <div className="timer">
+                Timer: {time}
+            </div>
+        );
+    };
 
     function countMines() {
         const updateSquares = squares.slice();
@@ -194,6 +207,7 @@ export default function App() {
         <>
             <div>Total mines: {maxMines}</div>
             <div>Mines left: {mines}</div>
+            <Timer />
             <Board squares={squares} handleClick={handleClick} />
         </>
     );
