@@ -67,8 +67,6 @@ export default function App() {
     function placeMines(updateSquares, y, x) {
         if (isGameStarted) return;
 
-        // const updateSquares = squares.slice();
-
         const mines = new Array(maxMines);
 
         for (let i = 0; i < mines.length; i++) {
@@ -119,6 +117,8 @@ export default function App() {
 
         if (e.type === 'contextmenu') {
             e.preventDefault()
+            if (updateSquares[y][x].open) return;
+
             if (updateSquares[y][x].flagged) {
                 updateSquares[y][x].flagged = false;
                 setMines(mines + 1);
