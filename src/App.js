@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
-
-let isGameStarted = false;
+import { Timer } from "./components/Timer";
 
 export default function App() {
     const boardSize = 8;
     const maxMines = 10;
 
+    const [isGameStarted, setGameStarted] = useState(false);
     const [squares, setSquares] = useState(new Array(boardSize).fill().map(() => new Array(boardSize).fill().map(() => {
         return {
             open: false,
@@ -18,29 +18,12 @@ export default function App() {
     })));
     const [mines, setMines] = useState(maxMines);
     const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
-    const [time, setTime] = useState(0);
 
     useEffect(() => {
         if (closedSquares === 0) {
             alert('You have won!');
         }
     }, [closedSquares]);
-
-    const Timer = () => {
-        useEffect(() => {
-            let intervalId;
-            if (isGameStarted) {
-                intervalId = setInterval(() => setTime(time + 1), 1000);
-            }
-            return () => clearInterval(intervalId);
-        }, []);
-
-        return (
-            <div className="timer">
-                Timer: {time}
-            </div>
-        );
-    };
 
     function countMines() {
         const updateSquares = squares.slice();
@@ -125,7 +108,7 @@ export default function App() {
         setSquares(updateSquares);
         countMines();
 
-        isGameStarted = true;
+        setGameStarted(true);
     }
 
     function handleClick(e, y, x) {
@@ -207,7 +190,10 @@ export default function App() {
         <>
             <div>Total mines: {maxMines}</div>
             <div>Mines left: {mines}</div>
-            <Timer />
+            {
+                JSON.stringify(isGameStarted)
+            }
+            <Timer isGameStarted={isGameStarted} />
             <Board squares={squares} handleClick={handleClick} />
         </>
     );
