@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Board } from "./components/Board";
 
 let isGameStarted = false;
@@ -17,6 +17,17 @@ export default function App() {
         }
     })));
     const [mines, setMines] = useState(maxMines);
+    const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
+
+    if (closedSquares === 0) {
+
+    }
+
+    useEffect(() => {
+        if (closedSquares === 0) {
+            alert('You have won!');
+        }
+    }, [closedSquares]);
 
     function countMines() {
         const updateSquares = squares.slice();
@@ -111,6 +122,7 @@ export default function App() {
             if (!updateSquares[y][x].flagged) {
                 placeMines(updateSquares, y, x);
                 updateSquares[y][x].open = true;
+                setClosedSquares(closedSquares - 1);
                 openField(updateSquares, y, x);
             }
         }
@@ -122,9 +134,11 @@ export default function App() {
             if (updateSquares[y][x].flagged) {
                 updateSquares[y][x].flagged = false;
                 setMines(mines + 1);
+                setClosedSquares(closedSquares + 1);
             } else {
                 updateSquares[y][x].flagged = true;
                 setMines(mines - 1);
+                setClosedSquares(closedSquares - 1);
             }
         }
         setSquares(updateSquares);
@@ -134,6 +148,7 @@ export default function App() {
         const currentRow = updateSquares[y];
         if (!currentRow[x].open && !currentRow[x].flagged) {
             currentRow[x].open = true;
+            setClosedSquares(closedSquares - 1);
         }
 
         if (currentRow[x].minesNearby > 0 || currentRow[x].mine) return;
