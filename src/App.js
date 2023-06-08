@@ -16,6 +16,7 @@ export default function App() {
             questionMark: false
         }
     })));
+    const [mines, setMines] = useState(maxMines);
 
     function countMines() {
         const updateSquares = squares.slice();
@@ -105,9 +106,80 @@ export default function App() {
         isGameStarted = true;
     }
 
+    function handleClick(e, y, x) {
+        const updateSquares = squares.slice();
+
+        if (e.type === 'click') {
+            if (!updateSquares[y][x].flagged) {
+                placeMines(updateSquares, y, x);
+                updateSquares[y][x].open = true;
+                openField(updateSquares, y, x);
+            }
+        }
+
+        if (e.type === 'contextmenu') {
+            e.preventDefault()
+            if (updateSquares[y][x].flagged) {
+                updateSquares[y][x].flagged = false;
+                setMines(mines + 1);
+            } else {
+                updateSquares[y][x].flagged = true;
+                setMines(mines - 1);
+            }
+        }
+        setSquares(updateSquares);
+    }
+
+    function openField(updateSquares, y, x) {
+        const currentRow = updateSquares[y];
+        if (!currentRow[x].open && !currentRow[x].flagged) {
+            currentRow[x].open = true;
+        }
+
+        if (currentRow[x].minesNearby > 0 || currentRow[x].mine) return;
+
+        if (x < currentRow.length - 1 && !currentRow[x + 1].open) {
+            openField(updateSquares, y, x + 1);
+        }
+
+        if (x > 0 && !currentRow[x - 1].open) {
+            openField(updateSquares, y, x - 1);
+        }
+
+        const topRow = updateSquares[y - 1];
+        if (topRow && !topRow[x].open) {
+            openField(updateSquares, y - 1, x);
+        }
+
+        if (topRow && x < topRow.length - 1 && !topRow[x + 1].open) {
+            openField(updateSquares, y - 1, x + 1);
+        }
+
+        if (topRow && x > 0 && !topRow[x - 1].open) {
+            openField(updateSquares, y - 1, x - 1);
+        }
+
+        const bottomRow = updateSquares[y + 1];
+        if (bottomRow && !bottomRow[x].open) {
+            openField(updateSquares, y + 1, x);
+        }
+
+        if (bottomRow && x < bottomRow.length - 1 && !bottomRow[x + 1].open) {
+            openField(updateSquares, y + 1, x + 1);
+        }
+
+        if (bottomRow && x > 0 && !bottomRow[x - 1].open) {
+            openField(updateSquares, y + 1, x - 1);
+        }
+
+        setSquares(updateSquares);
+    }
+
     return (
         <>
-            <Board squares={squares} setSquares={setSquares} placeMines={placeMines} />
+            <div>Total mines: {maxMines}</div>
+            <div>Mines left: {mines}</div>
+            <Board squares={squares} handleClick={handleClick} />
         </>
     );
 }
