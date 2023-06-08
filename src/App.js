@@ -118,7 +118,7 @@ export default function App() {
             if (!updateSquares[y][x].flagged) {
                 placeMines(updateSquares, y, x);
                 updateSquares[y][x].open = true;
-                setClosedSquares(closedSquares - 1);
+                setClosedSquares((squares) => squares + 1);
                 openField(updateSquares, y, x);
             }
         }
@@ -130,11 +130,11 @@ export default function App() {
             if (updateSquares[y][x].flagged) {
                 updateSquares[y][x].flagged = false;
                 setMines(mines + 1);
-                setClosedSquares(closedSquares + 1);
+                setClosedSquares((squares) => squares + 1);
             } else {
                 updateSquares[y][x].flagged = true;
                 setMines(mines - 1);
-                setClosedSquares(closedSquares - 1);
+                setClosedSquares((squares) => squares - 1);
             }
         }
         setSquares(updateSquares);
@@ -144,7 +144,7 @@ export default function App() {
         const currentRow = updateSquares[y];
         if (!currentRow[x].open && !currentRow[x].flagged) {
             currentRow[x].open = true;
-            setClosedSquares(closedSquares - 1);
+            setClosedSquares((squares) => squares - 1);
         }
 
         if (currentRow[x].minesNearby > 0 || currentRow[x].mine) return;
@@ -191,7 +191,7 @@ export default function App() {
             <div>Total mines: {maxMines}</div>
             <div>Mines left: {mines}</div>
             {
-                JSON.stringify(isGameStarted)
+                JSON.stringify(closedSquares)
             }
             <Timer isGameStarted={isGameStarted} />
             <Board squares={squares} handleClick={handleClick} />
