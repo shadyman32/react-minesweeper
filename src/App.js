@@ -72,8 +72,6 @@ export default function App() {
     }
 
     function placeMines(updateSquares, y, x) {
-        if (isGameStarted) return;
-
         const mines = new Array(maxMines);
 
         for (let i = 0; i < mines.length; i++) {
@@ -115,26 +113,22 @@ export default function App() {
         const updateSquares = squares.slice();
 
         if (e.type === 'click') {
-            if (!updateSquares[y][x].flagged) {
-                placeMines(updateSquares, y, x);
-                updateSquares[y][x].open = true;
-                setClosedSquares((squares) => squares + 1);
-                openField(updateSquares, y, x);
-            }
+            if (!isGameStarted) placeMines(updateSquares, y, x);
+            openField(updateSquares, y, x);
         }
 
         if (e.type === 'contextmenu') {
             e.preventDefault()
             if (updateSquares[y][x].open) return;
 
+            updateSquares[y][x].flagged = !updateSquares[y][x].flagged;
+
             if (updateSquares[y][x].flagged) {
-                updateSquares[y][x].flagged = false;
-                setMines(mines + 1);
-                setClosedSquares((squares) => squares + 1);
-            } else {
-                updateSquares[y][x].flagged = true;
                 setMines(mines - 1);
                 setClosedSquares((squares) => squares - 1);
+            } else {
+                setMines(mines + 1);
+                setClosedSquares((squares) => squares + 1);
             }
         }
         setSquares(updateSquares);
