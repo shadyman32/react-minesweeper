@@ -8,6 +8,7 @@ export default function App() {
 
     const [isGameStarted, setGameStarted] = useState(false);
     const [isGameOver, setGameIsOver] = useState(false);
+    const [win, setWin] = useState(false);
     const [squares, setSquares] = useState(new Array(boardSize).fill().map(() => new Array(boardSize).fill().map(() => {
         return {
             open: false,
@@ -21,14 +22,15 @@ export default function App() {
     const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
 
     useEffect(() => {
-        setGameStarted(false);
-    }, [isGameOver]);
-
-    useEffect(() => {
         if (closedSquares === 0 && mines === 0) {
-            alert('You have won!');
+            setWin(true);
         }
     }, [closedSquares, mines]);
+
+    useEffect(() => {
+        setGameStarted(false);
+        if (win) alert('You have won!');
+    }, [isGameOver, win]);
 
     function placeMines(firstSquare) {
         const updateSquares = squares.slice();
