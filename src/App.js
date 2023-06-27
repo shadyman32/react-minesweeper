@@ -17,7 +17,7 @@ export default function App() {
             questionMark: false
         }
     })));
-    const [mines, setMines] = useState(maxMines);
+    const [mines, setMines] = useState(0);
     const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
 
     useEffect(() => {
@@ -25,10 +25,10 @@ export default function App() {
     }, [isGameOver]);
 
     useEffect(() => {
-        if (closedSquares === 0) {
+        if (closedSquares === 0 && mines === 0) {
             alert('You have won!');
         }
-    }, [closedSquares]);
+    }, [closedSquares, mines]);
 
     function placeMines(firstSquare) {
         const updateSquares = squares.slice();
@@ -49,6 +49,7 @@ export default function App() {
             }
 
             updateSquares[y][x].mine = true;
+            setMines(mines => mines + 1);
         }
 
         const countMines = (y, x) => {
@@ -124,10 +125,10 @@ export default function App() {
             updateSquares[y][x].flagged = !updateSquares[y][x].flagged;
 
             if (updateSquares[y][x].flagged) {
-                setMines(mines - 1);
+                setMines(mines => mines - 1);
                 setClosedSquares((squares) => squares - 1);
             } else {
-                setMines(mines + 1);
+                setMines(mines => mines + 1);
                 setClosedSquares((squares) => squares + 1);
             }
         }
