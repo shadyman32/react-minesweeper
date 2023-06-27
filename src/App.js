@@ -72,14 +72,17 @@ export default function App() {
         });
 
         setSquares(updateSquares);
-        setGameStarted(true);
     }
 
     function handleClick(e, y, x) {
         const updateSquares = squares.slice();
 
         if (e.type === 'click') {
-            if (!isGameStarted && !isGameOver) placeMines({ y, x });
+            if (!isGameStarted && !isGameOver) {
+                placeMines({ y, x });
+                setGameStarted(true);
+            }
+
             if (!updateSquares[y][x].open && !updateSquares[y][x].flagged) {
                 openField(y, x);
             }
