@@ -12,7 +12,7 @@ export function Square({ state, rowId, columnId, handleClick }) {
         }
     }
 
-    const buttonClass = state.open ? `square square-${state.minesNearby} square-open` : `square square-${state.minesNearby}`;
+    const buttonClass = state.open ? `square square-${state.minesNearby} square-open` : `square`;
 
     return (
         <button
