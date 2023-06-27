@@ -30,53 +30,8 @@ export default function App() {
         }
     }, [closedSquares]);
 
-    function countMines() {
+    function placeMines(y, x) {
         const updateSquares = squares.slice();
-
-        updateSquares.forEach((row, yPos) => {
-            row.forEach((square, xPos) => {
-                if (square.mine) return;
-
-                if (row[xPos + 1] && row[xPos + 1].mine) {
-                    square.minesNearby += 1;
-                }
-
-                if (row[xPos - 1] && row[xPos - 1].mine) {
-                    square.minesNearby += 1;
-                }
-
-                const topRow = updateSquares[yPos - 1];
-                if (topRow) {
-                    if (topRow[xPos].mine) {
-                        square.minesNearby += 1;
-                    }
-                    if (topRow[xPos - 1] && topRow[xPos - 1].mine) {
-                        square.minesNearby += 1;
-                    }
-                    if (topRow[xPos + 1] && topRow[xPos + 1].mine) {
-                        square.minesNearby += 1;
-                    }
-                }
-
-                const bottomRow = updateSquares[yPos + 1];
-                if (bottomRow) {
-                    if (bottomRow[xPos] && bottomRow[xPos].mine) {
-                        square.minesNearby += 1;
-                    }
-                    if (bottomRow[xPos - 1] && bottomRow[xPos - 1].mine) {
-                        square.minesNearby += 1;
-                    }
-                    if (bottomRow[xPos + 1] && bottomRow[xPos + 1].mine) {
-                        square.minesNearby += 1;
-                    }
-                }
-            });
-        });
-
-        setSquares(updateSquares);
-    }
-
-    function placeMines(updateSquares, y, x) {
         const mines = new Array(maxMines);
 
         for (let i = 0; i < mines.length; i++) {
@@ -108,9 +63,27 @@ export default function App() {
             updateSquares[position.y][position.x].mine = true;
         });
 
-        setSquares(updateSquares);
-        countMines();
+        const countMines = (y, x) => {
+            if (!updateSquares[y]?.[x] || updateSquares[y][x].mine) return;
+            updateSquares[y][x].minesNearby += 1;
+        }
 
+        updateSquares.forEach((row, y) => {
+            row.forEach((square, x) => {
+                if (!square.mine) return;
+
+                countMines(y, x + 1);
+                countMines(y, x - 1);
+                countMines(y + 1, x);
+                countMines(y - 1, x);
+                countMines(y + 1, x + 1);
+                countMines(y + 1, x - 1);
+                countMines(y - 1, x + 1);
+                countMines(y - 1, x - 1);
+            });
+        });
+
+        setSquares(updateSquares);
         setGameStarted(true);
     }
 
@@ -118,7 +91,7 @@ export default function App() {
         const updateSquares = squares.slice();
 
         if (e.type === 'click') {
-            if (!isGameStarted && !isGameOver) placeMines(updateSquares, y, x);
+            if (!isGameStarted && !isGameOver) placeMines(y, x);
             if (!updateSquares[y][x].open && !updateSquares[y][x].flagged) {
                 openField(y, x);
             }
