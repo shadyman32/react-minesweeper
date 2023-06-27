@@ -34,7 +34,7 @@ export default function App() {
         const updateSquares = squares.slice();
         let numberOfMines = maxMines;
 
-        for (let i = 0; i <= numberOfMines; i++) {
+        for (let i = 0; i < numberOfMines; i++) {
             let y = Math.floor(Math.random() * boardSize);
             let x = Math.floor(Math.random() * boardSize);
 
