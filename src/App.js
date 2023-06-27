@@ -144,7 +144,14 @@ export default function App() {
         if (!currentRow[x].open && !currentRow[x].flagged) {
             currentRow[x].open = true;
             setClosedSquares((squares) => squares - 1);
-            if (currentRow[x].mine) setGameIsOver(true);
+            if (currentRow[x].mine) {
+                setGameIsOver(true);
+                updateSquares.forEach(row => {
+                    row.forEach(square => {
+                        if (square.mine && !square.flagged) square.open = true;
+                    });
+                });
+            }
         }
 
         if (currentRow[x].minesNearby > 0 || currentRow[x].mine) return;
