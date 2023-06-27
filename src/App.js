@@ -7,6 +7,7 @@ export default function App() {
     const maxMines = 10;
 
     const [isGameStarted, setGameStarted] = useState(false);
+    const [isGameOver, setGameIsOver] = useState(false);
     const [squares, setSquares] = useState(new Array(boardSize).fill().map(() => new Array(boardSize).fill().map(() => {
         return {
             open: false,
@@ -18,6 +19,10 @@ export default function App() {
     })));
     const [mines, setMines] = useState(maxMines);
     const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
+
+    useEffect(() => {
+        setGameStarted(false);
+    }, [isGameOver]);
 
     useEffect(() => {
         if (closedSquares === 0) {
@@ -113,7 +118,7 @@ export default function App() {
         const updateSquares = squares.slice();
 
         if (e.type === 'click') {
-            if (!isGameStarted) placeMines(updateSquares, y, x);
+            if (!isGameStarted && !isGameOver) placeMines(updateSquares, y, x);
             openField(updateSquares, y, x);
         }
 
@@ -139,6 +144,7 @@ export default function App() {
         if (!currentRow[x].open && !currentRow[x].flagged) {
             currentRow[x].open = true;
             setClosedSquares((squares) => squares - 1);
+            if (currentRow[x].mine) setGameIsOver(true);
         }
 
         if (currentRow[x].minesNearby > 0 || currentRow[x].mine) return;
