@@ -30,38 +30,26 @@ export default function App() {
         }
     }, [closedSquares]);
 
-    function placeMines(y, x) {
+    function placeMines(firstSquare) {
         const updateSquares = squares.slice();
-        const mines = new Array(maxMines);
+        let numberOfMines = maxMines;
 
-        for (let i = 0; i < mines.length; i++) {
-            let duplicate = false;
-            const newMine = {
-                y: Math.floor(Math.random() * boardSize),
-                x: Math.floor(Math.random() * boardSize)
-            }
+        for (let i = 0; i <= numberOfMines; i++) {
+            let y = Math.floor(Math.random() * boardSize);
+            let x = Math.floor(Math.random() * boardSize);
 
-            mines.forEach((mine) => {
-                if (mine.y === newMine.y && mine.x === newMine.x) {
-                    duplicate = true;
-                }
-            });
-
-            if (y === newMine.y && x === newMine.x) {
-                duplicate = true;
-            }
-
-            if (!duplicate) {
-                mines[i] = newMine;
-            } else {
-                duplicate = false;
-                i -= 1;
+            if (firstSquare.y === y && firstSquare.x === x) {
+                i = i - 1;
                 continue;
             }
+
+            if (updateSquares[y][x].mine) {
+                i = i - 1;
+                continue;
+            }
+
+            updateSquares[y][x].mine = true;
         }
-        mines.forEach(position => {
-            updateSquares[position.y][position.x].mine = true;
-        });
 
         const countMines = (y, x) => {
             if (!updateSquares[y]?.[x] || updateSquares[y][x].mine) return;
@@ -91,7 +79,7 @@ export default function App() {
         const updateSquares = squares.slice();
 
         if (e.type === 'click') {
-            if (!isGameStarted && !isGameOver) placeMines(y, x);
+            if (!isGameStarted && !isGameOver) placeMines({ y, x });
             if (!updateSquares[y][x].open && !updateSquares[y][x].flagged) {
                 openField(y, x);
             }
