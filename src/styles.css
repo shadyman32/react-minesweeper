@@ -1,8 +1,15 @@
+body {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
 .square {
-    height: 30px;
-    width: 30px;
+    height: 25px;
+    width: 25px;
     padding: 0px;
     float: left;
+    font-size: 1em;
+    font-weight: bolder;
 }
 
 .square-1 {
