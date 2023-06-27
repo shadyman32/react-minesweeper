@@ -10,7 +10,7 @@ export function Timer({ isGameStarted }) {
             intervalId = setInterval(() => setTime((oldTime) => oldTime + 1), 1000);
         }
         return () => clearInterval(intervalId);
-    });
+    }, [isGameStarted]);
 
     return (
         <div className="timer">
