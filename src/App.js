@@ -3,13 +3,16 @@ import { Board } from "./components/Board";
 import { Timer } from "./components/Timer";
 
 export default function App() {
-    const boardSize = 8;
-    const maxMines = 10;
+    const BEGINNER = { y: 9, x: 9, maxMines: 10 };
+    const INTERMEDIATE = { y: 16, x: 16, maxMines: 40 };
+    const EXPERT = { y: 16, x: 30, maxMines: 99 };
 
+    const [boardSize, setBoardSize] = useState(BEGINNER);
+    const [maxMines, setMaxMines] = useState(BEGINNER.maxMines);
     const [isGameStarted, setGameStarted] = useState(false);
     const [isGameOver, setGameIsOver] = useState(false);
     const [win, setWin] = useState(false);
-    const [squares, setSquares] = useState(new Array(boardSize).fill().map((y, yIndex) => new Array(boardSize).fill().map((x, xIndex) => {
+    const [squares, setSquares] = useState(new Array(boardSize.y).fill().map((y, yIndex) => new Array(boardSize.x).fill().map((x, xIndex) => {
         return {
             y: yIndex,
             x: xIndex,
@@ -20,8 +23,22 @@ export default function App() {
             questionMark: false
         }
     })));
-    const [mines, setMines] = useState(0);
-    const [closedSquares, setClosedSquares] = useState(boardSize * boardSize);
+    const [mines, setMines] = useState(BEGINNER.maxMines);
+    const [closedSquares, setClosedSquares] = useState(boardSize.y * boardSize.x);
+
+    useEffect(() => {
+        setSquares(new Array(boardSize.y).fill().map((y, yIndex) => new Array(boardSize.x).fill().map((x, xIndex) => {
+            return {
+                y: yIndex,
+                x: xIndex,
+                open: false,
+                mine: false,
+                minesNearby: 0,
+                flagged: false,
+                questionMark: false
+            }
+        })));
+    }, [boardSize]);
 
     useEffect(() => {
         if (closedSquares === 0 && mines === 0) {
@@ -40,8 +57,8 @@ export default function App() {
         let numberOfMines = maxMines;
 
         for (let i = 0; i < numberOfMines; i++) {
-            let y = Math.floor(Math.random() * boardSize);
-            let x = Math.floor(Math.random() * boardSize);
+            let y = Math.floor(Math.random() * boardSize.y);
+            let x = Math.floor(Math.random() * boardSize.x);
 
             if (firstSquare.y === y && firstSquare.x === x) {
                 i = i - 1;
@@ -54,7 +71,6 @@ export default function App() {
             }
 
             updateSquares[y][x].mine = true;
-            setMines(mines => mines + 1);
         }
 
         const countMines = (square) => {
@@ -170,6 +186,16 @@ export default function App() {
         setSquares(updateSquares);
     }
 
+    function setUpGame(settings) {
+        setBoardSize(settings);
+        setMaxMines(settings.maxMines);
+        setClosedSquares(settings.y * settings.x);
+        setGameStarted(false);
+        setGameIsOver(false);
+        setWin(false);
+        setMines(settings.maxMines);
+    }
+
     return (
         <>
             <div>Total mines: {maxMines}</div>
@@ -179,6 +205,10 @@ export default function App() {
             }
             <Timer isGameStarted={isGameStarted} />
             <Board squares={squares} handleClick={handleClick} />
+            <button onClick={() => setUpGame(BEGINNER)} >Beginner</button>
+            <button onClick={() => setUpGame(INTERMEDIATE)}>Intermediate</button>
+            <button onClick={() => setUpGame(EXPERT)}>Expert</button>
+            <button>Custom</button>
         </>
     );
 }

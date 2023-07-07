@@ -7,6 +7,7 @@ export function Timer({ isGameStarted }) {
     useEffect(() => {
         let intervalId;
         if (isGameStarted) {
+            setTime(0);
             intervalId = setInterval(() => setTime((oldTime) => oldTime + 1), 1000);
         }
         return () => clearInterval(intervalId);
