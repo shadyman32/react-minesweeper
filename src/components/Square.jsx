@@ -3,7 +3,7 @@ import React from 'react'
 export function Square({ state, rowId, columnId, handleClick }) {
     function getState() {
         if (!state.open) {
-            if (state.flagged) return '!';
+            if (state.flagged) return '🚩';
             if (state.questionMark) return '?';
         };
         if (state.open) {
