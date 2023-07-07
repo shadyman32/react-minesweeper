@@ -26,6 +26,7 @@ export default function App() {
     useEffect(() => {
         if (closedSquares === 0 && mines === 0) {
             setWin(true);
+            setGameIsOver(true);
         }
     }, [closedSquares, mines]);
 
