@@ -17,9 +17,9 @@ export function Square({ state, rowId, columnId, handleClick }) {
     return (
         <button
             className={buttonClass}
-            onClick={(e) => handleClick(e, rowId, columnId)}
-            onContextMenu={(e) => handleClick(e, rowId, columnId)}
-            onAuxClick={(e) => handleClick(e, rowId, columnId)}
+            onClick={(e) => handleClick(e, state)}
+            onContextMenu={(e) => handleClick(e, state)}
+            onAuxClick={(e) => handleClick(e, state)}
         >
             {getState()}
         </button>
