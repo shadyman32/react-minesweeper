@@ -9,8 +9,10 @@ export default function App() {
     const [isGameStarted, setGameStarted] = useState(false);
     const [isGameOver, setGameIsOver] = useState(false);
     const [win, setWin] = useState(false);
-    const [squares, setSquares] = useState(new Array(boardSize).fill().map(() => new Array(boardSize).fill().map(() => {
+    const [squares, setSquares] = useState(new Array(boardSize).fill().map((y, yIndex) => new Array(boardSize).fill().map((x, xIndex) => {
         return {
+            y: yIndex,
+            x: xIndex,
             open: false,
             mine: false,
             minesNearby: 0,
@@ -80,6 +82,23 @@ export default function App() {
     function handleClick(e, y, x) {
         const updateSquares = squares.slice();
 
+        function getNeighbors(square) {
+            const list = [];
+            const minX = Math.max(0, square.x - 1);
+            const maxX = Math.min(updateSquares[square.y].length - 1, square.x + 1);
+            const minY = Math.max(0, square.y - 1);
+            const maxY = Math.min(updateSquares.length - 1, square.y + 1);
+
+            for (let y = minY; y <= maxY; y++) {
+                for (let x = minX; x <= maxX; x++) {
+                    if (y !== square.y || x !== square.x) {
+                        list.push(updateSquares[y][x]);
+                    }
+                }
+            }
+            return list;
+        }
+
         function openField(y, x) {
             if (!updateSquares[y]?.[x] || updateSquares[y][x].open) return;
             updateSquares[y][x].open = true;
@@ -97,14 +116,11 @@ export default function App() {
 
             if (updateSquares[y][x].minesNearby > 0) return;
 
-            openField(y, x + 1);
-            openField(y, x - 1);
-            openField(y - 1, x);
-            openField(y + 1, x);
-            openField(y - 1, x + 1);
-            openField(y - 1, x - 1);
-            openField(y + 1, x + 1);
-            openField(y + 1, x - 1);
+            const list = getNeighbors(updateSquares[y][x]);
+            list.forEach(square => {
+                updateSquares[square.y][square.x] = square;
+                openField(square.y, square.x)
+            });
 
             setSquares(updateSquares);
         }
@@ -141,52 +157,20 @@ export default function App() {
             let minesNearby = 0;
             let flagsAreSet = false;
 
-            const checkForFlags = (y, x) => {
-                if (!updateSquares[y]?.[x]) return;
-                if (updateSquares[y][x].flagged) return minesNearby += 1;
-            }
-
-            checkForFlags(y, x + 1);
-            checkForFlags(y, x - 1);
-            checkForFlags(y - 1, x);
-            checkForFlags(y + 1, x);
-            checkForFlags(y - 1, x + 1);
-            checkForFlags(y - 1, x - 1);
-            checkForFlags(y + 1, x + 1);
-            checkForFlags(y + 1, x - 1);
+            const list = getNeighbors(updateSquares[y][x]);
+            list.forEach(square => {
+                if (square.flagged) minesNearby += 1;
+            });
 
             if (updateSquares[y][x].minesNearby === minesNearby) {
                 flagsAreSet = true;
             }
 
-            const openNearbySquares = (y, x) => {
-                if (!updateSquares[y]?.[x]) return;
-                if (updateSquares[y][x].flagged) return;
-                if (flagsAreSet && !updateSquares[y][x].open) {
-                    updateSquares[y][x].open = true;
-                    setClosedSquares(squares => squares - 1);
+            list.forEach(square => {
+                if (square.flagged) return;
+                if (flagsAreSet) openField(square.y, square.x);
+            });
 
-                    if (updateSquares[y][x].minesNearby === 0) {
-                        openField(y, x + 1);
-                        openField(y, x - 1);
-                        openField(y - 1, x);
-                        openField(y + 1, x);
-                        openField(y - 1, x + 1);
-                        openField(y - 1, x - 1);
-                        openField(y + 1, x + 1);
-                        openField(y + 1, x - 1);
-                    }
-                }
-            }
-
-            openNearbySquares(y, x + 1);
-            openNearbySquares(y, x - 1);
-            openNearbySquares(y - 1, x);
-            openNearbySquares(y + 1, x);
-            openNearbySquares(y - 1, x + 1);
-            openNearbySquares(y - 1, x - 1);
-            openNearbySquares(y + 1, x + 1);
-            openNearbySquares(y + 1, x - 1);
         }
         setSquares(updateSquares);
     }
