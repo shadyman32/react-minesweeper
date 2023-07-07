@@ -20,11 +20,13 @@ export default function App() {
             mine: false,
             minesNearby: 0,
             flagged: false,
-            questionMark: false
+            questionMark: false,
+            middleDown: false
         }
     })));
     const [mines, setMines] = useState(BEGINNER.maxMines);
     const [closedSquares, setClosedSquares] = useState(boardSize.y * boardSize.x);
+    const [middleDown, setMiddleDown] = useState(false);
 
     useEffect(() => {
         setSquares(new Array(boardSize.y).fill().map((y, yIndex) => new Array(boardSize.x).fill().map((x, xIndex) => {
@@ -35,7 +37,8 @@ export default function App() {
                 mine: false,
                 minesNearby: 0,
                 flagged: false,
-                questionMark: false
+                questionMark: false,
+                highlight: false
             }
         })));
     }, [boardSize]);
@@ -181,8 +184,28 @@ export default function App() {
                 if (neighbor.flagged) return;
                 if (flagsAreSet) openField(neighbor);
             });
-
         }
+
+        const list = getNeighbors(square, updateSquares);
+
+        if (e.type === 'mousedown' && e.button === 1) {
+            list.forEach(neighbor => neighbor.highlight = true);
+            setMiddleDown(true);
+        }
+
+        if (e.type === 'mouseup' && e.button === 1) {
+            list.forEach(neighbor => neighbor.highlight = false);
+            setMiddleDown(false);
+        }
+
+        if (e.type === 'mouseenter' && middleDown) {
+            list.forEach(neighbor => neighbor.highlight = true);
+        }
+
+        if (e.type === 'mouseleave' && middleDown) {
+            list.forEach(neighbor => neighbor.highlight = false);
+        }
+
         setSquares(updateSquares);
     }
 
