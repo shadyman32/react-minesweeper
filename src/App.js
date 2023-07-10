@@ -140,6 +140,8 @@ export default function App() {
         }
 
         if (e.type === 'click') {
+            if (isGameOver) return;
+
             if (!isGameStarted && !isGameOver) {
                 placeMines(square);
                 setGameStarted(true);
@@ -152,6 +154,7 @@ export default function App() {
 
         if (e.type === 'contextmenu') {
             e.preventDefault()
+            if (isGameOver) return;
             if (square.open) return;
 
             square.flagged = !square.flagged;
@@ -189,6 +192,7 @@ export default function App() {
         const list = getNeighbors(square, updateSquares);
 
         if (e.type === 'mousedown' && e.button === 1) {
+            if (isGameOver) return;
             list.forEach(neighbor => neighbor.highlight = true);
             setMiddleDown(true);
         }
