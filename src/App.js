@@ -29,21 +29,6 @@ export default function App() {
     const [middleDown, setMiddleDown] = useState(false);
 
     useEffect(() => {
-        setSquares(new Array(boardSize.y).fill().map((y, yIndex) => new Array(boardSize.x).fill().map((x, xIndex) => {
-            return {
-                y: yIndex,
-                x: xIndex,
-                open: false,
-                mine: false,
-                minesNearby: 0,
-                flagged: false,
-                questionMark: false,
-                highlight: false
-            }
-        })));
-    }, [boardSize]);
-
-    useEffect(() => {
         if (closedSquares === 0 && mines === 0) {
             setWin(true);
             setGameIsOver(true);
@@ -221,6 +206,19 @@ export default function App() {
         setGameIsOver(false);
         setWin(false);
         setMines(settings.maxMines);
+
+        setSquares(new Array(settings.y).fill().map((y, yIndex) => new Array(settings.x).fill().map((x, xIndex) => {
+            return {
+                y: yIndex,
+                x: xIndex,
+                open: false,
+                mine: false,
+                minesNearby: 0,
+                flagged: false,
+                questionMark: false,
+                highlight: false
+            }
+        })));
     }
 
     return (
