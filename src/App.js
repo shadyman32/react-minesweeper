@@ -32,13 +32,10 @@ export default function App() {
         if (closedSquares === 0 && mines === 0) {
             setWin(true);
             setGameIsOver(true);
+            setGameStarted(false);
+            if (win) alert('You have won!');
         }
-    }, [closedSquares, mines]);
-
-    useEffect(() => {
-        setGameStarted(false);
-        if (win) alert('You have won!');
-    }, [isGameOver, win]);
+    }, [closedSquares, mines, win]);
 
     function placeMines(firstSquare) {
         const updateSquares = squares.slice();
